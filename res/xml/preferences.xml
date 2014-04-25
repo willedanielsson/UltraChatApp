@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:entries="@array/color"
+        android:entryValues="@array/colorValues"
+        android:key="colors"
+        android:summary="@string/color_chat_desc"
+        android:title="@string/color" />
+
+    <EditTextPreference
+        android:key="username"
+        android:summary="@string/username_desc"
+        android:title="@string/username" />
+    
+    <CheckBoxPreference 
+        android:key="status_messages"
+        android:summary="@string/status_messages_desc"
+        android:title="@string/status_messages"/>
+
+</PreferenceScreen>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="colorValues">
+        <item name="black">black</item>
+        <item name="green">green</item>
+        <item name="red">red</item>
+        <item name="blue">blue</item>
+        <item name="blue">brown</item>
+    </string-array>
+    
+    <string-array name="color">
+        <item name="black">Black</item>
+        <item name="green">Green</item>
+        <item name="red">Red</item>
+        <item name="blue">Blue</item>
+        <item name="blue">Brown</item>
+    </string-array>
+
+</resources>

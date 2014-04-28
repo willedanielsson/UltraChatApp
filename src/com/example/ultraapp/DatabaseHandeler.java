@@ -48,7 +48,6 @@ public class DatabaseHandeler {
 					// Save text to file
 					textFile.saveText(chatHistory);
 
-					// message.showStatus("DB-load success!");
 				} catch (JSONException e) {
 					message.showStatus("ERROR: DB-load 1!");
 				}
@@ -71,10 +70,7 @@ public class DatabaseHandeler {
 		params.put("username", settings.getUserName());
 		params.put("color", settings.getColor());
 		Connector.post("insert.php", params, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(String response) {
-				message.showStatus("Saved to DB.");
-			}
+
 		});
 	}
 

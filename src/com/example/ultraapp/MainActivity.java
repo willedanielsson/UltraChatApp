@@ -3,6 +3,10 @@ package com.example.ultraapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -26,6 +30,9 @@ public class MainActivity extends Activity {
 	AppSettings settings;
 	Context c;
 	Handler myHandler = new Handler();
+	Boolean isLightAchieved = false;
+	Boolean isProximityAchieved = false;
+	int updateTime = 1000;
 
 	protected static final String USERNAME = null;
 
@@ -63,31 +70,51 @@ public class MainActivity extends Activity {
 
 		// Load latest database text. Sets chat text and saves text file.
 		dataBase.loadText();
-		new Thread(new Runnable() {
 
+		SensorManager mySensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		Sensor lightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+		Sensor proximitySensor = mySensorManager
+				.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+		if (lightSensor != null) {
+
+			mySensorManager.registerListener(lightSensorListener, lightSensor,
+					SensorManager.SENSOR_DELAY_NORMAL);
+		}
+
+		if (proximitySensor != null) {
+			mySensorManager.registerListener(proximitySensorListener,
+					proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+		}
+
+		// Auto-update text
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
 				while (true) {
 					try {
-						Thread.sleep(1000);
-						myHandler.post(new Runnable() {
+						// När dessa är true så kommer vi inte auto-uppdatera. När detta
+						// bryts så fortsätter uppdateringen
+						if (isLightAchieved == true && isProximityAchieved == true) {
+						} else {
+							Thread.sleep(5000);
+							myHandler.post(new Runnable() {
+								@Override
+								public void run() {
+									dataBase.loadText();
+								}
 
-							@Override
-							public void run() {
-								dataBase.loadText();
-							}
-
-						});
+							});
+						}
 					} catch (Exception e) {
 
 					}
 				}
-
 			}
 		}).start();
 
-	}
+	}// OnCreate
 
 	private void setupHelpClasses() {
 		c = getApplicationContext();
@@ -158,4 +185,48 @@ public class MainActivity extends Activity {
 		return Html.toHtml((Spanned) mtextOutput.getText());
 	}
 
-}
+	// Have the listener for lightsensor
+	private final SensorEventListener lightSensorListener = new SensorEventListener() {
+
+		@Override
+		public void onSensorChanged(SensorEvent event) {
+			if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+				if (event.values[0] <= 10) {
+					isLightAchieved = true;
+				} else {
+					isLightAchieved = false;
+				}
+			}
+
+		}
+
+		@Override
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			// TODO Auto-generated method stub
+
+		}
+	};
+
+	// Have the listener for proximity
+	final private SensorEventListener proximitySensorListener = new SensorEventListener() {
+
+		@Override
+		public void onSensorChanged(SensorEvent event) {
+			if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+				if (event.values[0] == 0) {
+					isProximityAchieved = true;
+				} else {
+					isProximityAchieved = false;
+				}
+			}
+
+		}
+
+		@Override
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			// TODO Auto-generated method stub
+
+		}
+	};
+
+} // END

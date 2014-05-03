@@ -135,8 +135,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 
-				// Save button
+				// Send button
 				if (v.getId() == R.id.save) {
+
 					String input = mtextInput.getText().toString();
 					if (!input.equals("")) {
 						addToOutput(input);

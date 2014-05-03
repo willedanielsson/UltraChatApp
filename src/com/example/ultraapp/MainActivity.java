@@ -7,10 +7,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +34,7 @@ public class MainActivity extends Activity {
 	Handler myHandler = new Handler();
 	Boolean isLightAchieved = false;
 	Boolean isProximityAchieved = false;
+	Boolean isPhoneInCall = false;
 	int updateTime = 1000;
 
 	protected static final String USERNAME = null;
@@ -96,7 +99,10 @@ public class MainActivity extends Activity {
 					try {
 						// När dessa är true så kommer vi inte auto-uppdatera. När detta
 						// bryts så fortsätter uppdateringen
-						if (isLightAchieved == true && isProximityAchieved == true) {
+						Log.w("test", isPhoneInCall.toString());
+						isCallActive(MainActivity.this);
+						if (isLightAchieved == true && isProximityAchieved == true
+								&& isPhoneInCall == false) {
 						} else {
 							Thread.sleep(5000);
 							myHandler.post(new Runnable() {
@@ -228,5 +234,15 @@ public class MainActivity extends Activity {
 
 		}
 	};
+
+	public void isCallActive(Context context) {
+		AudioManager manager = (AudioManager) context
+				.getSystemService(Context.AUDIO_SERVICE);
+		if (manager.getMode() == AudioManager.MODE_IN_CALL) {
+			isPhoneInCall = true;
+		} else {
+			isPhoneInCall = false;
+		}
+	}
 
 } // END
